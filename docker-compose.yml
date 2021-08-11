@@ -21,8 +21,7 @@ services:
     expose:
       - 80
     volumes:
-      - ./:/var/www
-      - ./docker-compose/nginx:/etc/nginx/conf.d
+      - ./:/usr/share/nginx/html:ro
     environment:
       - VIRTUAL_HOST=botpress.laravelthewebartisan.com
       - LETSENCRYPT_HOST=botpress.laravelthewebartisan.com
