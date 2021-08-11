@@ -1,0 +1,23 @@
+name: CD
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Commit built assets
+      run: |
+        git config --local user.email "rrodriguezj@uni.pe"
+        git config --local user.name "Roberth Rodriguez"
+        git checkout -B deploy
+        git push -f origin deploy
+    - name: Deploy to VPS
+      uses: appleboy/ssh-action@master
+      with:
+        username: Roberth
+        host: Botpress host
+        key: ${{ secrets.SSH_KEY }}
