@@ -14,3 +14,7 @@ or
 ````
 export RUNNER_ALLOW_RUNASROOT="1"
 ````
+
+Regards:
+<br>  
+- [Roberth Rodriguez](roberth.rodriguez@laravelthewebartisan.com)
