@@ -20,39 +20,49 @@ services:
     restart: unless-stopped
     expose:
       - 80
-    ports:
-      - "80:80"
     volumes:
       - ./:/var/www
       - ./docker-compose/nginx:/etc/nginx/conf.d
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/lib/letsencrypt
+    environment:
+      - VIRTUAL_HOST=botpress.laravelthewebartisan.com
+      - LETSENCRYPT_HOST=botpress.laravelthewebartisan.com
+      - LETSENCRYPT_EMAIL=roberth.rodriguez@laravelthewebartisan.com
     depends_on:
-      - botpress
+      - nginx-proxy
+      - letsencrypt
     networks:
       - botpress-network
 
-  certbot:
-    image: certbot/certbot
-    container_name: certbot
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
     volumes:
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/lib/letsencrypt
-      - web-root:/var/www/html
-    depends_on:
-      - nginx
-    command: certonly --webroot --webroot-path=/var/www --email roberth.rodriguez@laravelthewebartisan.com --agree-tos --no-eff-email --staging -d botpress.laravelthewebartisan.com;
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - certs:/etc/nginx/certs:ro
+      - vhostd:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+    labels:
+      - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy
 
-volumes:
-  certbot-etc:
-  certbot-var:
-  web-root:
-    driver: local
-    driver_opts:
-      type: none
-      device: /home/roberth/botpress_project/views/
-      o: bind
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    restart: always
+    environment:
+      - NGINX_PROXY_CONTAINER=nginx-proxy
+    volumes:
+      - certs:/etc/nginx/certs:rw
+      - vhostd:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - /var/run/docker.sock:/var/run/docker.sock:ro
 
 networks:
   botpress-network:
     driver: bridge
+
+volumes:
+  certs:
+  html:
+  vhostd:
