@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy:
-    name: CD deploy
+    name: CD deploy to VPS
     runs-on: self-hosted
     steps:
     - uses: actions/checkout@v2
