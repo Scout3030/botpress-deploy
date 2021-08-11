@@ -6,13 +6,10 @@ on:
 
 jobs:
   deploy:
-    name: CD deploy to VPS
     runs-on: self-hosted
     steps:
     - uses: actions/checkout@v2
-    - name: Commit built assets
+    - name: Set credentials
       run: |
         git config --local user.email "rrodriguezj@uni.pe"
         git config --local user.name "Roberth Rodriguez"
-        git checkout -B deploy
-        git push -f origin deploy
