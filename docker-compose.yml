@@ -16,10 +16,7 @@ services:
       - botpress-network
 
   nginx:
-    image: nginx:latest
-    build:
-      context: ./
-      dockerfile: docker-compose/nginx/Dockerfile
+    image: nginx:1.19.4
     container_name: nginx
     working_dir: /var/www
     restart: unless-stopped
