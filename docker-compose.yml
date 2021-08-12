@@ -19,7 +19,7 @@ services:
     image: nginx:latest
     build:
       context: ./
-      dockerfile: docker-compose/nginx.dockerfile
+      dockerfile: docker-compose/nginx/Dockerfile
     container_name: nginx
     working_dir: /var/www
     restart: unless-stopped
@@ -29,10 +29,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-#      - ./:/var/www
       - ./docker-compose/nginx:/etc/nginx/conf.d
-#      - ./docker-compose/ssl/self.crt:/var/www/ssl/self.crt
-#      - ./docker-compose/ssl/self.key:/var/www/ssl/self.key
     depends_on:
       - botpress
     networks:
