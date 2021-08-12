@@ -4,6 +4,7 @@ services:
   botpress:
     image: botpress/server:latest
     container_name: botpress
+    working_dir: /var/www
     command: /botpress/bp
     expose:
       - 3000
@@ -15,16 +16,23 @@ services:
       - botpress-network
 
   nginx:
-    image: nginx:alpine
+    image: nginx:latest
+    build:
+      context: ./
+      dockerfile: docker-compose/nginx.dockerfile
     container_name: nginx
+    working_dir: /var/www
     restart: unless-stopped
     expose:
-      - 80
+      - 443
     ports:
       - "80:80"
+      - "443:443"
     volumes:
-      - ./:/var/www
+#      - ./:/var/www
       - ./docker-compose/nginx:/etc/nginx/conf.d
+#      - ./docker-compose/ssl/self.crt:/var/www/ssl/self.crt
+#      - ./docker-compose/ssl/self.key:/var/www/ssl/self.key
     depends_on:
       - botpress
     networks:
