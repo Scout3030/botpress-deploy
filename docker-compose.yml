@@ -19,9 +19,10 @@ services:
     container_name: nginx
     restart: unless-stopped
     expose:
-      - 80
+      - 443
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./:/var/www
       - ./docker-compose/nginx:/etc/nginx/conf.d
