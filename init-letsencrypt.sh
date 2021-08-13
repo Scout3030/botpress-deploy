@@ -18,7 +18,7 @@ if [ -d "$data_path" ]; then
   fi
 fi
 
-
+# Renew existing certificates from image (certbot)
 if [ ! -e "$data_path/conf/options-ssl-nginx.conf" ] || [ ! -e "$data_path/conf/ssl-dhparams.pem" ]; then
   echo "### Downloading recommended TLS parameters ..."
   mkdir -p "$data_path/conf"
@@ -42,7 +42,7 @@ echo "### Starting nginx ..."
 docker-compose up --force-recreate -d nginx
 echo
 
-echo "### Deleting dummy certificate for $domains ..."
+echo "### Deleting dummy certificate for $domains ... on container"
 docker-compose run --rm --entrypoint "\
   rm -Rf /etc/letsencrypt/live/$domains && \
   rm -Rf /etc/letsencrypt/archive/$domains && \
@@ -66,15 +66,15 @@ esac
 # Enable staging mode if needed
 if [ $staging != "0" ]; then staging_arg="--staging"; fi
 
-docker-compose run --rm --entrypoint "\
-  certbot certonly --webroot -w /var/www/certbot \
-    $staging_arg \
-    $email_arg \
-    $domain_args \
-    --rsa-key-size $rsa_key_size \
-    --agree-tos \
-    --force-renewal" certbot
-echo
+#docker-compose run --rm --entrypoint "\
+#  certbot certonly --webroot -w /var/www/certbot \
+#    $staging_arg \
+#    $email_arg \
+#    $domain_args \
+#    --rsa-key-size $rsa_key_size \
+#    --agree-tos \
+#    --force-renewal" certbot
+#echo
 
-echo "### Reloading nginx ..."
-docker-compose exec nginx nginx -s reload
+#echo "### Reloading nginx ..."
+#docker-compose exec nginx nginx -s reload
