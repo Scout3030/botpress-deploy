@@ -30,8 +30,8 @@ services:
       - ./certbot/data:/usr/share/nginx/html/letsencrypt
 #    depends_on:
 #      - botpress
-    networks:
-      - botpress-network
+#    networks:
+#      - botpress-network
   certbot:
     image: certbot/certbot:latest
     command: certonly --webroot --webroot-path=/usr/share/nginx/html/letsencrypt --email roberth.rodriguez@laravelthewebartisan.com --agree-tos --no-eff-email -d botpress.laravelthewebartisa.com
