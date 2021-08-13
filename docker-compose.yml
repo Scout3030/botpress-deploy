@@ -26,7 +26,7 @@ services:
 
   nginx-baby:
     image: nginx:1.19.4
-    container_name: nginx
+    container_name: nginx-baby
     restart: always
     expose:
       - "80"
