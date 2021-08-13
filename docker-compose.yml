@@ -32,7 +32,7 @@ services:
     expose:
       - "80"
     volumes:
-      - /Users/kbs/git/peladonerd/varios/1/www:/usr/share/nginx/html:ro
+      - ./www:/usr/share/nginx/html:ro
     environment:
       - VIRTUAL_HOST=botpress.laravelthewebartisan.com
       - LETSENCRYPT_HOST=botpress.laravelthewebartisan.com
