@@ -26,8 +26,9 @@ services:
       - html:/usr/share/nginx/html
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
-  www:
+  nginx:
     image: nginx:1.19.4
+    container_name: nginx
     restart: always
     expose:
       - "80"
@@ -40,6 +41,20 @@ services:
     depends_on:
       - nginx-proxy
       - letsencrypt
+
+  botpress:
+    image: botpress/server:latest
+    container_name: botpress
+    working_dir: /var/www
+    command: /botpress/bp
+    expose:
+      - 3000
+    volumes:
+      - ./botpress/data:/botpress/data
+    ports:
+      - "3000:3000"
+    networks:
+      - botpress-network
 volumes:
   certs:
   html:
