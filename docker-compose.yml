@@ -24,9 +24,9 @@ services:
       - vhostd:/etc/nginx/vhost.d
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
-  nginx-baby:
+  nginx:
     image: nginx:1.19.4
-    container_name: nginx-baby
+    container_name: nginx
     restart: always
     expose:
       - "80"
