@@ -1,44 +1,46 @@
-version: '3.4'
+version: '3'
 
 services:
-#  botpress:
-#    image: botpress/server:latest
-#    container_name: botpress
-#    working_dir: /var/www
-#    command: /botpress/bp
-#    expose:
-#      - 3000
-#    volumes:
-#      - ./botpress/data:/botpress/data
-#    ports:
-#      - "3000:3000"
-#    networks:
-#      - botpress-network
-
-  web:
-    image: nginx:1.14.2-alpine
+  nginx-proxy:
+    image: jwilder/nginx-proxy
     restart: always
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./public_html:/public_html
-      - ./conf.d:/etc/nginx/conf.d/
-      - ./dhparam:/etc/nginx/dhparam
-      - ./certbot/conf/:/etc/nginx/ssl/
-      - ./certbot/data:/usr/share/nginx/html/letsencrypt
-#    depends_on:
-#      - botpress
-#    networks:
-#      - botpress-network
-  certbot:
-    image: certbot/certbot
-    command: certonly --nginx
-    volumes:
-      - ./certbot/conf/:/etc/letsencrypt
-      - ./certbot/logs/:/var/log/letsencrypt
-      - ./certbot/data:/usr/share/nginx/html/letsencrypt
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - certs:/etc/nginx/certs:ro
+      - vhostd:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+    labels:
+      - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy
 
-#networks:
-#  botpress-network:
-#    driver: bridge
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    restart: always
+    environment:
+      - NGINX_PROXY_CONTAINER=nginx-proxy
+    volumes:
+      - certs:/etc/nginx/certs:rw
+      - vhostd:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  www:
+    image: nginx
+    restart: always
+    expose:
+      - "80"
+    volumes:
+      - /Users/kbs/git/peladonerd/varios/1/www:/usr/share/nginx/html:ro
+    environment:
+      - VIRTUAL_HOST=www.laravelthewebartisan.com
+      - LETSENCRYPT_HOST=botpress.laravelthewebartisan.com
+      - LETSENCRYPT_EMAIL=roberth.rodriguez@laravelthewebartisan.com
+    depends_on:
+      - nginx-proxy
+      - letsencrypt
+volumes:
+  certs:
+  html:
+  vhostd:
