@@ -1,45 +1,45 @@
-version: '3'
+version: '3.4'
 
 services:
-  botpress:
-    image: botpress/server:latest
-    container_name: botpress
-    working_dir: /var/www
-    command: /botpress/bp
-    expose:
-      - 3000
-    volumes:
-      - ./botpress/data:/botpress/data
-    ports:
-      - "3000:3000"
-    networks:
-      - botpress-network
+#  botpress:
+#    image: botpress/server:latest
+#    container_name: botpress
+#    working_dir: /var/www
+#    command: /botpress/bp
+#    expose:
+#      - 3000
+#    volumes:
+#      - ./botpress/data:/botpress/data
+#    ports:
+#      - "3000:3000"
+#    networks:
+#      - botpress-network
 
-  nginx:
-    image: nginx:latest
-    build:
-      context: ./
-      dockerfile: docker-compose/nginx/Dockerfile
+  web:
+    image: nginx:1.14.2-alpine
     container_name: nginx
-    working_dir: /var/www
-    restart: unless-stopped
-    expose:
-      - 443
+    restart: always
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./docker-compose/nginx:/etc/nginx/conf.d
-    depends_on:
-      - botpress
+      - ./public_html:/public_html
+      - ./conf.d:/etc/nginx/conf.d
+      - ./dhparam:/etc/nginx/dhparam
+      - ./certbot/conf:/etc/nginx/ssl
+      - ./certbot/data:/usr/share/nginx/html/letsencrypt
+#    depends_on:
+#      - botpress
     networks:
       - botpress-network
   certbot:
-    image: certbot/certbot
+    image: certbot/certbot:latest
+    command: certonly --webroot --webroot-path=/usr/share/nginx/html/letsencrypt --email roberth.rodriguez@laravelthewebartisan.com --agree-tos --no-eff-email -d botpress.laravelthewebartisa.com
     volumes:
-      - ./docker-compose/certbot/conf:/etc/letsencrypt
-      - ./docker-compose/certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/logs:/var/logs/letsencrypt
+      - ./certbot/data:/usr/share/nginx/html/letsencrypt
 
-networks:
-  botpress-network:
-    driver: bridge
+#networks:
+#  botpress-network:
+#    driver: bridge
