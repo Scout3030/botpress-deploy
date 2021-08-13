@@ -33,6 +33,7 @@ services:
     expose:
       - "80"
     volumes:
+      - ./docker-compose/nginx:/etc/nginx/conf.d
       - ./www:/usr/share/nginx/html:ro
     environment:
       - VIRTUAL_HOST=botpress.laravelthewebartisan.com
@@ -53,7 +54,7 @@ services:
       - ./botpress/data:/botpress/data
     ports:
       - "3000:3000"
-    
+
 volumes:
   certs:
   html:
