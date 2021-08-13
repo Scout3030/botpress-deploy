@@ -33,7 +33,7 @@ services:
 #      - botpress-network
   certbot:
     image: certbot/certbot
-    command: certonly --webroot --webroot-path=/usr/share/nginx/html/letsencrypt --email roberth.rodriguez@laravelthewebartisan.com --agree-tos --no-eff-email -d botpress.laravelthewebartisa.com
+    command: certonly --nginx
     volumes:
       - ./certbot/conf/:/etc/letsencrypt
       - ./certbot/logs/:/var/log/letsencrypt
