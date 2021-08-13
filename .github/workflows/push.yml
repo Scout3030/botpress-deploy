@@ -11,4 +11,5 @@ jobs:
     - uses: actions/checkout@v2
     - name: Set credentials
       run: |
-        ls -la
+        docker-compose down --remove-orphans
+        docker-compose up -d
