@@ -53,8 +53,7 @@ services:
       - ./botpress/data:/botpress/data
     ports:
       - "3000:3000"
-    networks:
-      - botpress-network
+    
 volumes:
   certs:
   html:
