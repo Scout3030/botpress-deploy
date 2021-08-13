@@ -34,7 +34,6 @@ services:
       - "80"
     volumes:
       - ./docker-compose/nginx:/etc/nginx/conf.d
-      - ./www:/usr/share/nginx/html:ro
     environment:
       - VIRTUAL_HOST=botpress.laravelthewebartisan.com
       - LETSENCRYPT_HOST=botpress.laravelthewebartisan.com
