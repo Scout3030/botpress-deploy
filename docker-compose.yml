@@ -45,8 +45,8 @@ services:
     container_name: botpress
     command: /botpress/bp
     environment:
-      - DATABASE_URL=postgres://postgres:secretpw@postgres:5435/botpress_db
-      - REDIS_URL=redis://redis:6379?password=redisPassword
+      - DATABASE_URL="postgres://postgres:secretpw@postgres:5435/botpress_db"
+      - REDIS_URL="redis://redis:6379?password=redisPassword"
       - CLUSTER_ENABLED=true
       - BP_PRODUCTION=false
       - BPFS_STORAGE=database
