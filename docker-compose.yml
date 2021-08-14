@@ -54,6 +54,7 @@ services:
 
   postgres:
     image: postgres:11.2-alpine
+    container_name: postgres
     expose:
       - 5435
     environment:
@@ -66,6 +67,7 @@ services:
 
   redis:
     image: redis:5.0.5-alpine
+    container_name: redis
     expose:
       - 6379
     command: redis-server --requirepass redisPassword
