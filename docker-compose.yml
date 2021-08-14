@@ -51,7 +51,6 @@ services:
       - BP_PRODUCTION=false
       - BPFS_STORAGE=database
     depends_on:
-      - botpress_lang
       - postgres
       - redis
     expose:
