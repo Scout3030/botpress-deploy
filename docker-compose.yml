@@ -1,6 +1,45 @@
 version: '3'
 
 services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - certs:/etc/nginx/certs:ro
+      - vhostd:/etc/nginx/vhost.d
+    labels:
+      - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy
+
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    restart: always
+    environment:
+      - NGINX_PROXY_CONTAINER=nginx-proxy
+    volumes:
+      - certs:/etc/nginx/certs:rw
+      - vhostd:/etc/nginx/vhost.d
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  nginx:
+    image: nginx:1.19.4
+    container_name: nginx
+    restart: always
+    expose:
+      - "80"
+    volumes:
+      - ./docker-compose/nginx:/etc/nginx/conf.d
+    environment:
+      - VIRTUAL_HOST=botpress.laravelthewebartisan.com
+      - LETSENCRYPT_HOST=botpress.laravelthewebartisan.com
+      - LETSENCRYPT_EMAIL=roberth.rodriguez@laravelthewebartisan.com
+    depends_on:
+      - nginx-proxy
+      - letsencrypt
+
   botpress:
     image: botpress/server:latest
     container_name: botpress
@@ -12,29 +51,7 @@ services:
       - ./botpress/data:/botpress/data
     ports:
       - "3000:3000"
-    networks:
-      - botpress-network
 
-  nginx:
-    image: nginx:latest
-    build:
-      context: ./
-      dockerfile: docker-compose/nginx/Dockerfile
-    container_name: nginx
-    working_dir: /var/www
-    restart: unless-stopped
-    expose:
-      - 443
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./docker-compose/nginx:/etc/nginx/conf.d
-    depends_on:
-      - botpress
-    networks:
-      - botpress-network
-
-networks:
-  botpress-network:
-    driver: bridge
+volumes:
+  certs:
+  vhostd:
