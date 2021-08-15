@@ -25,14 +25,11 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
   nginx:
-    image: "botpress/nginx:${TAG:-latest}"
-    build:
-      context: ./
-      dockerfile: docker-compose/nginx.dockerfile
+    image: nginx:1.19.4
     container_name: nginx
     restart: always
     expose:
-      - "80"
+      - 80
     volumes:
       - ./docker-compose/nginx:/etc/nginx/conf.d
     environment:
