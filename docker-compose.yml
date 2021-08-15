@@ -41,7 +41,7 @@ services:
       - letsencrypt
 
   botpress:
-    image: botpress/server:latest
+    image: botpress/server:v12.23.2
     container_name: botpress
     working_dir: /var/www
     command: /botpress/bp
