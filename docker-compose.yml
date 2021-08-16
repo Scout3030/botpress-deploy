@@ -8,7 +8,7 @@ services:
     expose:
       - 80
     volumes:
-      - ./docker-compose/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./docker-compose/nginx:/etc/nginx/conf.d
     environment:
       - VIRTUAL_HOST=botpress.laravelthewebartisan.com
       - LETSENCRYPT_HOST=botpress.laravelthewebartisan.com
