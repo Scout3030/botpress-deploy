@@ -15,6 +15,9 @@ services:
       - LETSENCRYPT_EMAIL=roberth.rodriguez@laravelthewebartisan.com
     networks:
       - botpress-network
+    depends_on:
+      - nginx-proxy
+      - letsencrypt
 
   botpress:
     image: botpress/server:v12.23.2
