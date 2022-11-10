@@ -17,7 +17,6 @@ services:
     image: nginxproxy/acme-companion
     container_name: nginx-proxy-acme
     environment:
-      - "ACME_CA_URI=https://acme-staging-v02.api.letsencrypt.org/directory"
       - DEFAULT_EMAIL=roberth.rodriguez@laravelthewebartisan.com
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
