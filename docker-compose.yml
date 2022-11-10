@@ -1,38 +1,52 @@
-version: '3'
+version: '2'
 
 services:
-  nginx-botpress:
-    image: nginx:1.19.4
-    container_name: nginx-botpress
-    restart: always
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - certs:/etc/nginx/certs
+      - vhostd:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+
+  nginx-proxy-acme:
+    image: nginxproxy/acme-companion
+    container_name: nginx-proxy-acme
+    environment:
+      - "ACME_CA_URI=https://acme-staging-v02.api.letsencrypt.org/directory"
+      - DEFAULT_EMAIL=roberth.rodriguez@laravelthewebartisan.com
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - acme:/etc/acme.sh
+    volumes_from:
+      - nginx-proxy:rw
+
+  nginx-proxyed:
+    image: nginx
+    container_name: nginx-proxyed
     expose:
       - 80
     volumes:
-      - ./docker-compose/nginx:/etc/nginx/conf.d
+      - ./docker-compose/nginx:/etc/nginx/conf.d/
     environment:
-      - VIRTUAL_HOST=botpress.laravelthewebartisan.com
-      - LETSENCRYPT_HOST=botpress.laravelthewebartisan.com
-      - LETSENCRYPT_EMAIL=roberth.rodriguez@laravelthewebartisan.com
-    networks:
-      - botpress-network
+      - VIRTUAL_HOST=latam-jobs.com,www.latam-jobs.com
+      - LETSENCRYPT_HOST=latam-jobs.com,www.latam-jobs.com
 
   botpress:
-    image: botpress/server:v12.23.2
+    image: botpress/server
     container_name: botpress
-    working_dir: /var/www
-    command: /botpress/bp
     expose:
       - 3000
     volumes:
-      - ./botpress/data:/botpress/data
-    ports:
-      - "3000:3000"
-    networks:
-      - botpress-network
+      - botpress_data:/botpress/data
 
-networks:
-  botpress-network:
-    driver: bridge
-  default:
-    external:
-      name: proxynet
+volumes:
+  botpress_data:
+  certs:
+  html:
+  vhostd:
+  acme:
